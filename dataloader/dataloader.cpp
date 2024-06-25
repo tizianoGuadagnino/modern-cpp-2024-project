@@ -36,14 +36,14 @@ std::vector<Eigen::Vector2d> ReadLaserScan(const std::string &filename) {
   laserscan_file.seekg(0, std::ios::beg);
 
   std::vector<float> values(3 * num_points);
-  laserscan_file.read((char *)&values[0], 4 * num_points * sizeof(float));
+  laserscan_file.read((char *)&values[0], 3 * num_points * sizeof(float));
   laserscan_file.close();
 
   std::vector<Eigen::Vector2d> pointcloud;
   pointcloud.resize(num_points);
   for (uint32_t i = 0; i < num_points; i++) {
-    pointcloud[i].x() = values[i * 4];
-    pointcloud[i].y() = values[i * 4 + 1];
+    pointcloud[i].x() = values[i * 3];
+    pointcloud[i].y() = values[i * 3 + 1];
   }
   return pointcloud;
 }
@@ -52,7 +52,7 @@ std::vector<Eigen::Vector2d> ReadLaserScan(const std::string &filename) {
 namespace dataset {
 LaserScanDataset::LaserScanDataset(const std::string &data_root_dir) {
   data_root_dir_ = fs::absolute(fs::path(data_root_dir));
-  laser_scan_files_ = ReadLaserScanFiles(data_root_dir_ / "PLY/");
+  laser_scan_files_ = ReadLaserScanFiles(data_root_dir_ / "BINARY/");
 }
 
 LaserScanDataset::PointCloud LaserScanDataset::operator[](int idx) const {
